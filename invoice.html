@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>पायल ज्वेलर्स - इनव्हॉइस</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Premium Look & Feel --- */
+        body {
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #fdfbf5;
+            color: #3D3D3D;
+        }
+        .invoice-container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .invoice-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 30px;
+            background-color: #fafafa;
+            border-bottom: 1px solid #eaeaea;
+        }
+        .shop-details h1 {
+            font-family: 'Cormorant Garamond', serif;
+            margin: 0;
+            color: #2b2b2b;
+            font-size: 2.2em;
+        }
+        .shop-details p {
+            margin: 2px 0;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .invoice-body {
+            padding: 30px;
+        }
+        h2 {
+            font-family: 'Cormorant Garamond', serif;
+            border-bottom: 2px solid #D4AF37;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: left;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="number"], input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-family: 'Lato', sans-serif;
+        }
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .form-row > div { flex: 1; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #EAEAEA;
+            padding: 12px;
+            text-align: right;
+        }
+        thead th {
+            background-color: #f9f9f9;
+            font-weight: bold;
+            text-align: center;
+            color: #444;
+        }
+        .text-left { text-align: left; }
+        #itemsTable input { text-align: right; }
+        
+        .btn {
+            padding: 12px 20px;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+            font-family: 'Lato', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .btn-add { background-color: #3a7d44; }
+        .btn-delete { background-color: #c82333; padding: 5px 10px; font-size: 0.8em; text-transform: none; }
+        .btn-action { background-color: #D4AF37; margin-right: 10px; }
+
+        .totals-table { width: 50%; margin-left: 50%; margin-top: 20px; }
+        .totals-table td { border: none; }
+        .totals-table td:first-child { font-weight: bold; text-align: right; }
+        .totals-table td:last-child { text-align: right; }
+        .grand-total { font-size: 1.2em; font-weight: bold; color: #D4AF37; }
+
+        /* --- PRINTING FIX & STYLES --- */
+        .print-only { display: none; } /* Hide print-only elements on screen */
+
+        @media print {
+            body { background-color: white; margin: 0; padding: 0; }
+            .no-print { display: none; } /* Hide form elements when printing */
+            .print-only { display: block; } /* Show the clean data when printing */
+            .invoice-container { box-shadow: none; border: none; border-radius: 0; }
+            .invoice-body { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="invoice-container" id="invoice-to-print">
+    <div class="invoice-header">
+        <img src="../assets/logo.png" alt="Shop Logo" style="height: 80px; border-radius: 50%;">
+        <div class="shop-details">
+            <h1>पायल ज्वेलर्स, कोळे</h1>
+            <p><strong>पत्ता:</strong> (लक्ष्मी चौक जवळ), ता. सांगोला, जि. सोलापूर - 413314</p>
+            <p><strong>प्रोप्रा.</strong> श्री बाळासाहेब आकाराम सरकार | <strong>मोबाईल:</strong> 9359879279</p>
+        </div>
+    </div>
+
+    <div class="invoice-body">
+        <div class="no-print">
+            <h2>ग्राहक माहिती</h2>
+            <div class="form-row">
+                <div><label for="invoiceNo">बिल नंबर:</label><input type="text" id="invoiceNo" value="1"></div>
+                <div><label for="invoiceDate">आजची तारीख:</label><input type="date" id="invoiceDate"></div>
+            </div>
+            <div class="form-row">
+                <div><label for="customerName">नाव:</label><input type="text" id="customerName" placeholder="ग्राहक चे नाव"></div>
+                <div><label for="customerMobile">मोबाईल:</label><input type="text" id="customerMobile" placeholder="मोबाईल नंबर"></div>
+            </div>
+        </div>
+
+        <div class="print-only" style="margin-bottom: 20px;">
+            <table style="width: 100%; border: none;">
+                <tr>
+                    <td style="text-align: left; border: none;"><strong>ग्राहक चे नाव:</strong> <span id="print-customerName"></span></td>
+                    <td style="text-align: right; border: none;"><strong>बिल नंबर:</strong> <span id="print-invoiceNo"></span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; border: none;"><strong>मोबाईल:</strong> <span id="print-customerMobile"></span></td>
+                    <td style="text-align: right; border: none;"><strong>तारीख:</strong> <span id="print-invoiceDate"></span></td>
+                </tr>
+            </table>
+        </div>
+
+        <h2>वस्तू तपशील</h2>
+        <table id="itemsTable">
+            <thead>
+                <tr>
+                    <th class="text-left">विवरण (Item)</th>
+                    <th>वजन (gm)</th>
+                    <th>दर (₹)</th>
+                    <th>एकूण (₹)</th>
+                    <th class="no-print">काढा</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
+        <button class="btn btn-add no-print" onclick="addRow()">+ नवीन वस्तू जोडा</button>
+        
+        <table class="totals-table">
+            <tr class="grand-total">
+                <td>एकूण बिल (Grand Total):</td>
+                <td id="grandTotal">₹0.00</td>
+            </tr>
+            <tr class="no-print">
+                <td>जुने सोने/ॲडव्हान्स (-):</td>
+                <td><input type="number" id="deduction" value="0" style="text-align:right; padding: 5px;"></td>
+            </tr>
+            <tr class="grand-total">
+                <td>द्यायची रक्कम:</td>
+                <td id="finalAmount">₹0.00</td>
+            </tr>
+        </table>
+        
+        <div style="text-align: center; margin-top: 40px;" class="no-print">
+            <button class="btn btn-action" onclick="triggerPDF()">📄 PDF डाउनलोड करा</button>
+            <button class="btn btn-action" onclick="triggerPrint()">🖨️ प्रिंट करा</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+    document.getElementById('invoiceDate').valueAsDate = new Date();
+    
+    // Function to calculate all totals based on manual input
+    const updateTotals = () => {
+        let grandTotal = 0;
+        document.querySelectorAll('#itemsTable tbody tr').forEach(row => {
+            // Read the value directly from the manual total field
+            const rowTotal = parseFloat(row.querySelector('.item-total').value) || 0;
+            grandTotal += rowTotal;
+        });
+
+        const deduction = parseFloat(document.getElementById('deduction').value) || 0;
+        const finalAmount = grandTotal - deduction;
+
+        document.getElementById('grandTotal').textContent = `₹${grandTotal.toFixed(2)}`;
+        document.getElementById('finalAmount').textContent = `₹${finalAmount.toFixed(2)}`;
+    };
+
+    // Add a new row to the items table
+    const addRow = () => {
+        const table = document.querySelector('#itemsTable tbody');
+        const row = table.insertRow();
+        row.innerHTML = `
+            <td><input type="text" class="item-name text-left" placeholder="उदा. अंगठी"></td>
+            <td><input type="number" class="item-weight" value="0" step="0.01"></td>
+            <td><input type="number" class="item-rate" value="0" step="0.01"></td>
+            <td><input type="number" class="item-total" value="0" step="0.01"></td>
+            <td class="no-print"><button class="btn btn-delete" onclick="deleteRow(this)">X</button></td>
+        `;
+        row.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', updateTotals);
+        });
+    };
+
+    const deleteRow = (button) => {
+        button.closest('tr').remove();
+        updateTotals();
+    };
+    
+    document.getElementById('deduction').addEventListener('input', updateTotals);
+    
+    // NEW function to copy data from input fields to the printable spans
+    const syncDataForPrinting = () => {
+        document.getElementById('print-customerName').textContent = document.getElementById('customerName').value;
+        document.getElementById('print-customerMobile').textContent = document.getElementById('customerMobile').value;
+        document.getElementById('print-invoiceNo').textContent = document.getElementById('invoiceNo').value;
+        const date = new Date(document.getElementById('invoiceDate').value);
+        document.getElementById('print-invoiceDate').textContent = date.toLocaleDateString('en-GB'); // Format as DD/MM/YYYY
+    };
+
+    // Functions to trigger PDF/Print
+    const triggerPDF = () => {
+        syncDataForPrinting(); // Sync data right before creating PDF
+        const invoiceElement = document.getElementById("invoice-to-print");
+        const opt = {
+            margin: 0.5,
+            filename: `Invoice_${document.getElementById('invoiceNo').value}_${document.getElementById('customerName').value}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().from(invoiceElement).set(opt).save();
+    };
+
+    const triggerPrint = () => {
+        syncDataForPrinting(); // Sync data right before printing
+        window.print();
+    };
+
+    window.onload = addRow;
+</script>
+
+</body>
+</html>
